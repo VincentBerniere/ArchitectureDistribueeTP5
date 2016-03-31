@@ -15,10 +15,11 @@ import org.apache.log4j.Logger;
 public class ProducerConsumer {
 	
 	private static void printMenu(){
-		System.out.println("Entrez votre message :");
+		System.out.println("Entrez votre message : (pensez à bien démarrer le service Rest)");
 		System.out.println("\t- all : Retourne toutes les villes");
 		System.out.println("\t- search [nomVille] : Retourne toutes les villes avec comme nom [nomVille]");
 		System.out.println("\t- geonames [nomVille] : Retourne toutes les villes via Geonames avec comme nom [nomVille]");
+		System.out.println("\t- jgroups [message] : Envoie un [message] au cluster m1gil");
 		System.out.println("\t- exit : Stop le programme");
 	}
 	
@@ -28,7 +29,6 @@ public class ProducerConsumer {
 		CamelContext context = new DefaultCamelContext();
 		
 		RouteBuilder routeBuilder = new RouteBuilder() {
-			
 			@Override
 			public void configure() throws Exception {
 				from("direct:consumer-1").to("log:affiche-1-log");
@@ -37,7 +37,6 @@ public class ProducerConsumer {
 		};
 		
 		RouteBuilder routeBuilder2 = new RouteBuilder() {
-			
 			@Override
 			public void configure() throws Exception {
 				from("direct:consumer-all")
@@ -83,7 +82,6 @@ public class ProducerConsumer {
 		};
 		
 		RouteBuilder routeJgroups = new RouteBuilder() {
-			
 			@Override
 			public void configure() throws Exception {
 				from("direct:consumer-3").to("jgroups:m1gil");
@@ -101,7 +99,6 @@ public class ProducerConsumer {
 		context.start();
 		
 		ProducerTemplate pt = context.createProducerTemplate();
-		
 	
 		printMenu();
 		
@@ -113,7 +110,6 @@ public class ProducerConsumer {
 				break;
 			}
 			
-
 			if (s1.charAt(0) == 'w') {
 				pt.sendBodyAndHeader("direct:consumer-all", s1.substring(1, s1.length()), "entete1", "écrire");
 			} else if(s1.equals("all")){
